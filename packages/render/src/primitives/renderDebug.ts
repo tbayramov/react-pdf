@@ -1,5 +1,6 @@
 import { SafeNode } from '@react-pdf/layout';
-import { Context } from '../types';
+import withTag from '../operations/withTag';
+import { Context, RenderOptions } from '../types';
 import resolveHitSlop from '../utils/resolveHitSlop';
 
 const CONTENT_COLOR = '#a1c6e7';
@@ -221,10 +222,7 @@ const debugHitSlop = (ctx: Context, node: SafeNode) => {
   }
 };
 
-const renderDebug = (ctx: Context, node: SafeNode) => {
-  if (!node.props) return;
-  if (!('debug' in node.props) || !node.props.debug) return;
-
+const drawDebug = (ctx: Context, node: SafeNode) => {
   ctx.save();
 
   debugContent(ctx, node);
@@ -235,6 +233,13 @@ const renderDebug = (ctx: Context, node: SafeNode) => {
   debugOrigin(ctx, node);
 
   ctx.restore();
+};
+
+const renderDebug = (ctx: Context, node: SafeNode, options: RenderOptions) => {
+  if (!node.props) return;
+  if (!('debug' in node.props) || !node.props.debug) return;
+
+  withTag(options.taggingCtx, ctx, 'Artifact', () => drawDebug(ctx, node));
 };
 
 export default renderDebug;

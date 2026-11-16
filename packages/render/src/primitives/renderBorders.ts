@@ -4,7 +4,8 @@ import { isNil } from '@react-pdf/fns';
 import { Box, SafeNode } from '@react-pdf/layout';
 
 import parseColor from '../utils/parseColor';
-import { Context } from '../types';
+import withTag from '../operations/withTag';
+import { Context, RenderOptions } from '../types';
 
 type SafeBorderStyle = {
   borderTopColor: string;
@@ -686,9 +687,8 @@ const shouldRenderBorders = (node: SafeNode) =>
     node.box.borderBottomWidth ||
     node.box.borderLeftWidth);
 
-const renderBorders = (ctx: Context, node: SafeNode) => {
+const drawBorders = (ctx: Context, node: SafeNode) => {
   if (!node.box) return;
-  if (!shouldRenderBorders(node)) return;
 
   const {
     width,
@@ -803,6 +803,16 @@ const renderBorders = (ctx: Context, node: SafeNode) => {
   }
 
   ctx.restore();
+};
+
+const renderBorders = (
+  ctx: Context,
+  node: SafeNode,
+  options: RenderOptions,
+) => {
+  if (!shouldRenderBorders(node)) return;
+
+  withTag(options.taggingCtx, ctx, 'Artifact', () => drawBorders(ctx, node));
 };
 
 export default renderBorders;
