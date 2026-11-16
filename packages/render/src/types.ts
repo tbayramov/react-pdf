@@ -32,7 +32,15 @@ export type Context = typeof PDFKitDocument & {
   _addToParent: (ref: any) => Context;
 };
 
+/** Tagged PDF state passed down the render tree. */
+export interface TaggingContext {
+  /** Structure element that new structure elements attach to. */
+  parent: PDFKit.PDFStructureElement;
+}
+
 export interface RenderOptions {
   imageCache: Map<string | undefined, any>;
   fieldSets: (typeof PDFKitReference)[];
+  /** Set only when the document is tagged. */
+  taggingCtx?: TaggingContext;
 }

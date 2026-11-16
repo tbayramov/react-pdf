@@ -6,12 +6,14 @@ import { Box, SafeNode } from '@react-pdf/layout';
 import createCTX from '../ctx';
 import renderBackground from '../../src/primitives/renderBackground';
 
+const options = { imageCache: new Map(), fieldSets: [] };
+
 describe('primitive renderBackground', () => {
   test('should not render if node has no background', () => {
     const ctx = createCTX();
     const node: SafeNode = { type: P.View, props: {}, style: {} };
 
-    renderBackground(ctx, node);
+    renderBackground(ctx, node, options);
 
     expect(ctx.fill.mock.calls).toHaveLength(0);
   });
@@ -24,7 +26,7 @@ describe('primitive renderBackground', () => {
       style: { backgroundColor: 'red' },
     };
 
-    renderBackground(ctx, node);
+    renderBackground(ctx, node, options);
 
     expect(ctx.fill.mock.calls).toHaveLength(0);
   });
@@ -35,7 +37,7 @@ describe('primitive renderBackground', () => {
     const style = { backgroundColor: 'red' };
     const node: SafeNode = { type: P.View, style, props: {}, box };
 
-    renderBackground(ctx, node);
+    renderBackground(ctx, node, options);
 
     expect(ctx.fillColor.mock.calls).toEqual([['#FF0000']]);
     expect(ctx.rect.mock.calls).toEqual([[40, 20, 140, 200]]);
@@ -48,7 +50,7 @@ describe('primitive renderBackground', () => {
     const style = { backgroundColor: 'red' };
     const node: SafeNode = { type: P.View, style, box, props: {} };
 
-    renderBackground(ctx, node);
+    renderBackground(ctx, node, options);
 
     expect(ctx.save.mock.calls).toHaveLength(1);
     expect(ctx.restore.mock.calls).toHaveLength(1);
@@ -60,7 +62,7 @@ describe('primitive renderBackground', () => {
     const style = { backgroundColor: 'red' };
     const node: SafeNode = { type: P.View, style, box, props: {} };
 
-    renderBackground(ctx, node);
+    renderBackground(ctx, node, options);
 
     expect(ctx.fillOpacity.mock.calls).toEqual([[1]]);
   });
@@ -71,7 +73,7 @@ describe('primitive renderBackground', () => {
     const style = { backgroundColor: 'red', opacity: 0.8 };
     const node: SafeNode = { type: P.View, style, box, props: {} };
 
-    renderBackground(ctx, node);
+    renderBackground(ctx, node, options);
 
     expect(ctx.fillOpacity.mock.calls).toEqual([[0.8]]);
   });
@@ -82,7 +84,7 @@ describe('primitive renderBackground', () => {
     const style = { backgroundColor: 'red', opacity: 0 };
     const node: SafeNode = { type: P.View, style, box, props: {} };
 
-    renderBackground(ctx, node);
+    renderBackground(ctx, node, options);
 
     expect(ctx.fillOpacity.mock.calls).toEqual([[0]]);
   });
@@ -93,7 +95,7 @@ describe('primitive renderBackground', () => {
     const style = { backgroundColor: 'rgba(0, 0, 0, 0)', opacity: 1 };
     const node: SafeNode = { type: P.View, style, box, props: {} };
 
-    renderBackground(ctx, node);
+    renderBackground(ctx, node, options);
 
     expect(ctx.fillOpacity.mock.calls).toEqual([[0]]);
   });
@@ -104,7 +106,7 @@ describe('primitive renderBackground', () => {
     const style = { backgroundColor: 'rgba(255, 0, 0, 0.5)' };
     const node: SafeNode = { type: P.View, style, props: {}, box };
 
-    renderBackground(ctx, node);
+    renderBackground(ctx, node, options);
 
     expect(ctx.fillColor.mock.calls).toEqual([['#FF0000']]);
     expect(ctx.fillOpacity.mock.calls).toEqual([[0.5]]);
@@ -116,7 +118,7 @@ describe('primitive renderBackground', () => {
     const style = { backgroundColor: 'hsla(120, 100%, 50%, 0.6)' };
     const node: SafeNode = { type: P.View, style, props: {}, box };
 
-    renderBackground(ctx, node);
+    renderBackground(ctx, node, options);
 
     expect(ctx.fillColor.mock.calls).toEqual([['#00FF00']]);
     expect(ctx.fillOpacity.mock.calls).toEqual([[0.6]]);
@@ -128,7 +130,7 @@ describe('primitive renderBackground', () => {
     const style = { backgroundColor: '#FF000080' };
     const node: SafeNode = { type: P.View, style, props: {}, box };
 
-    renderBackground(ctx, node);
+    renderBackground(ctx, node, options);
 
     expect(ctx.fillColor.mock.calls).toEqual([['#FF0000']]);
     expect(ctx.fillOpacity.mock.calls[0][0]).toBeCloseTo(0.502, 2);
@@ -140,7 +142,7 @@ describe('primitive renderBackground', () => {
     const style = { backgroundColor: 'rgba(255, 0, 0, 0.8)', opacity: 0.5 };
     const node: SafeNode = { type: P.View, style, props: {}, box };
 
-    renderBackground(ctx, node);
+    renderBackground(ctx, node, options);
 
     expect(ctx.fillOpacity.mock.calls).toEqual([[0.5]]);
   });
@@ -151,7 +153,7 @@ describe('primitive renderBackground', () => {
     const style = { backgroundColor: 'rgba(255, 0, 0, 0.3)', opacity: 0.9 };
     const node: SafeNode = { type: P.View, style, props: {}, box };
 
-    renderBackground(ctx, node);
+    renderBackground(ctx, node, options);
 
     expect(ctx.fillOpacity.mock.calls).toEqual([[0.3]]);
   });

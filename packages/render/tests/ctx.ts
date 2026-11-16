@@ -65,6 +65,13 @@ const createCTX = () => {
     FT: type,
   }));
   instance._addToParent = vi.fn().mockReturnValue(instance);
+  instance.markContent = vi.fn().mockReturnValue(instance);
+  instance.endMarkedContent = vi.fn().mockReturnValue(instance);
+  instance.markStructureContent = vi.fn(() => ({}));
+  instance.struct = vi.fn((type: string, options: any, children: any) => ({
+    type,
+    children,
+  }));
   instance.outline = {
     children: [],
     document: vi.fn().mockReturnValue(instance),

@@ -15,6 +15,7 @@ import setLink from '../operations/setLink';
 import clipNode from '../operations/clipNode';
 import transform from '../operations/transform';
 import setDestination from '../operations/setDestination';
+import withTag from '../operations/withTag';
 import renderTextInput from './renderTextInput';
 import renderSelect from './renderSelect';
 import renderFieldSet, { cleanUpFieldSet } from './renderFieldSet';
@@ -62,6 +63,20 @@ const renderFns: Partial<Record<Primitives, any>> = {
   [P.Link]: setLink,
 };
 
+// Primitives whose render function draws no artifact: Text tags its own
+// content; Link, Note and form fields only add annotations, which aren't page
+// content.
+const nonArtifactPrimitives: Primitives[] = [
+  P.Text,
+  P.Link,
+  P.Note,
+  P.FieldSet,
+  P.TextInput,
+  P.Select,
+  P.Checkbox,
+  P.List,
+];
+
 const cleanUpFns: Partial<Record<Primitives, any>> = {
   [P.FieldSet]: cleanUpFieldSet,
 };
@@ -77,12 +92,17 @@ const renderNode = (ctx: Context, node: SafeNode, options: RenderOptions) => {
   if (overflowHidden) clipNode(ctx, node);
 
   transform(ctx, node);
-  renderBackground(ctx, node);
-  renderBorders(ctx, node);
+  renderBackground(ctx, node, options);
+  renderBorders(ctx, node, options);
 
   const renderFn = renderFns[node.type];
 
-  if (renderFn) renderFn(ctx, node, options);
+  if (renderFn) {
+    const draw = () => renderFn(ctx, node, options);
+
+    if (nonArtifactPrimitives.includes(node.type)) draw();
+    else withTag(options.taggingCtx, ctx, 'Artifact', draw);
+  }
 
   if (shouldRenderChildren) renderChildren(ctx, node, options);
 
@@ -91,7 +111,7 @@ const renderNode = (ctx: Context, node: SafeNode, options: RenderOptions) => {
   if (cleanUpFn) cleanUpFn(ctx, node, options);
 
   setDestination(ctx, node);
-  renderDebug(ctx, node);
+  renderDebug(ctx, node, options);
 
   ctx.restore();
 };

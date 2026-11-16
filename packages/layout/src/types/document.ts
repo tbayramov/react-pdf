@@ -12,7 +12,8 @@ export type PDFConformance =
   | 'PDF/A-2'
   | 'PDF/A-2b'
   | 'PDF/A-3'
-  | 'PDF/A-3b';
+  | 'PDF/A-3b'
+  | 'PDF/UA-1';
 
 export type PageLayout =
   | 'singlePage'
@@ -62,6 +63,11 @@ export type DocumentProps = {
   ownerPassword?: string;
   userPassword?: string;
   permissions?: Permissions;
+  /**
+   * Opt into Tagged PDF output. Work in progress: only Text is tagged so
+   * far, everything else is marked as an artifact.
+   */
+  experimentalTagged?: boolean;
   onRender?: (props: OnRenderProps) => any;
 };
 

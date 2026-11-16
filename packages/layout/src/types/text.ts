@@ -9,6 +9,23 @@ import { SafeTextInstanceNode, TextInstanceNode } from './text-instance';
 import { ImageNode, SafeImageNode } from './image';
 import { SafeTspanNode, TspanNode } from './tspan';
 
+export type TextTag =
+  | 'P'
+  | 'H1'
+  | 'H2'
+  | 'H3'
+  | 'H4'
+  | 'H5'
+  | 'H6'
+  | 'Lbl'
+  | 'LBody'
+  | 'TOCI'
+  | 'Caption'
+  | 'BlockQuote'
+  | 'Reference'
+  | 'Span'
+  | 'Artifact';
+
 interface TextProps extends NodeProps {
   /**
    * Enable/disable page wrapping for element.
@@ -37,6 +54,12 @@ interface TextProps extends NodeProps {
    * @see https://react-pdf.org/advanced#orphan-&-widow-protection
    */
   widows?: number;
+  /**
+   * Structure type of the text in Tagged PDF output. Defaults to 'P'.
+   * 'Artifact' leaves it out of the structure tree, e.g. for running headers.
+   * Only applies to a top-level Text: nested Text is part of its parent.
+   */
+  tag?: TextTag;
   // Svg props
   x?: number;
   y?: number;

@@ -6,12 +6,14 @@ import { Box, SafeNode } from '@react-pdf/layout';
 import createCTX from '../ctx';
 import renderBorders from '../../src/primitives/renderBorders';
 
+const options = { imageCache: new Map(), fieldSets: [] };
+
 describe('primitive renderBorders', () => {
   test('should not render if node has no box', () => {
     const ctx = createCTX();
     const node: SafeNode = { type: P.View, props: {}, style: {} };
 
-    renderBorders(ctx, node);
+    renderBorders(ctx, node, options);
 
     expect(ctx.stroke.mock.calls).toHaveLength(0);
   });
@@ -21,7 +23,7 @@ describe('primitive renderBorders', () => {
     const box = { top: 20, left: 40, width: 140, height: 200 } as Box;
     const node: SafeNode = { type: P.View, props: {}, style: {}, box };
 
-    renderBorders(ctx, node);
+    renderBorders(ctx, node, options);
 
     expect(ctx.stroke.mock.calls).toHaveLength(0);
   });
@@ -38,7 +40,7 @@ describe('primitive renderBorders', () => {
     const style = { borderTopColor: 'red' };
     const node: SafeNode = { type: P.View, style, props: {}, box };
 
-    renderBorders(ctx, node);
+    renderBorders(ctx, node, options);
 
     expect(ctx.strokeColor.mock.calls).toEqual([['#FF0000']]);
     expect(ctx.stroke.mock.calls).toHaveLength(1);
@@ -56,7 +58,7 @@ describe('primitive renderBorders', () => {
     const style = { borderTopColor: 'red' };
     const node: SafeNode = { type: P.View, style, props: {}, box };
 
-    renderBorders(ctx, node);
+    renderBorders(ctx, node, options);
 
     expect(ctx.strokeOpacity.mock.calls).toEqual([[1]]);
   });
@@ -73,7 +75,7 @@ describe('primitive renderBorders', () => {
     const style = { borderTopColor: 'rgba(60, 217, 48, 0.49)' };
     const node: SafeNode = { type: P.View, style, props: {}, box };
 
-    renderBorders(ctx, node);
+    renderBorders(ctx, node, options);
 
     expect(ctx.strokeColor.mock.calls).toEqual([['#3CD930']]);
     expect(ctx.strokeOpacity.mock.calls).toEqual([[0.49]]);
@@ -91,7 +93,7 @@ describe('primitive renderBorders', () => {
     const style = { borderTopColor: '#FF000080' };
     const node: SafeNode = { type: P.View, style, props: {}, box };
 
-    renderBorders(ctx, node);
+    renderBorders(ctx, node, options);
 
     expect(ctx.strokeColor.mock.calls).toEqual([['#FF0000']]);
     // 0x80 = 128, 128/255 ≈ 0.502
@@ -110,7 +112,7 @@ describe('primitive renderBorders', () => {
     const style = { borderTopColor: 'rgba(255, 0, 0, 0)' };
     const node: SafeNode = { type: P.View, style, props: {}, box };
 
-    renderBorders(ctx, node);
+    renderBorders(ctx, node, options);
 
     expect(ctx.strokeOpacity.mock.calls).toEqual([[0]]);
   });
@@ -127,7 +129,7 @@ describe('primitive renderBorders', () => {
     const style = { borderTopColor: 'rgba(255, 0, 0, 0.8)', opacity: 0.5 };
     const node: SafeNode = { type: P.View, style, props: {}, box };
 
-    renderBorders(ctx, node);
+    renderBorders(ctx, node, options);
 
     // Math.min(0.8, 0.5) = 0.5
     expect(ctx.strokeOpacity.mock.calls).toEqual([[0.5]]);
@@ -145,7 +147,7 @@ describe('primitive renderBorders', () => {
     const style = { borderTopColor: 'red', opacity: 0.7 };
     const node: SafeNode = { type: P.View, style, props: {}, box };
 
-    renderBorders(ctx, node);
+    renderBorders(ctx, node, options);
 
     expect(ctx.strokeOpacity.mock.calls).toEqual([[0.7]]);
   });
@@ -170,7 +172,7 @@ describe('primitive renderBorders', () => {
     };
     const node: SafeNode = { type: P.View, style, props: {}, box };
 
-    renderBorders(ctx, node);
+    renderBorders(ctx, node, options);
 
     expect(ctx.strokeOpacity.mock.calls).toEqual([[0.2], [0.4], [0.6], [0.8]]);
     expect(ctx.strokeColor.mock.calls).toEqual([
@@ -193,7 +195,7 @@ describe('primitive renderBorders', () => {
     const style = { borderTopColor: 'red' };
     const node: SafeNode = { type: P.View, style, box, props: {} };
 
-    renderBorders(ctx, node);
+    renderBorders(ctx, node, options);
 
     // One outer save/restore + one inner save/restore for each border side
     expect(ctx.save.mock.calls).toHaveLength(2);
@@ -212,7 +214,7 @@ describe('primitive renderBorders', () => {
     const style = { borderTopColor: '#00FF00' };
     const node: SafeNode = { type: P.View, style, props: {}, box };
 
-    renderBorders(ctx, node);
+    renderBorders(ctx, node, options);
 
     expect(ctx.strokeColor.mock.calls).toEqual([['#00FF00']]);
     expect(ctx.strokeOpacity.mock.calls).toEqual([[1]]);

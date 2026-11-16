@@ -2,7 +2,8 @@ import { isNil } from '@react-pdf/fns';
 
 import renderGlyphs from './renderGlyphs';
 import parseColor from '../utils/parseColor';
-import { Context } from '../types';
+import withTag from '../operations/withTag';
+import { Context, RenderOptions } from '../types';
 import { SafeTextNode } from '@react-pdf/layout';
 import {
   Attachment,
@@ -230,7 +231,7 @@ const renderBlock = (ctx: Context, block: Paragraph) => {
   });
 };
 
-const renderText = (ctx: Context, node: SafeTextNode) => {
+const drawText = (ctx: Context, node: SafeTextNode) => {
   if (!node.box) return;
   if (!node.lines) return;
 
@@ -249,6 +250,16 @@ const renderText = (ctx: Context, node: SafeTextNode) => {
   });
 
   ctx.restore();
+};
+
+const renderText = (
+  ctx: Context,
+  node: SafeTextNode,
+  options: RenderOptions,
+) => {
+  const tag = node.props?.tag || 'P';
+
+  withTag(options.taggingCtx, ctx, tag, () => drawText(ctx, node));
 };
 
 export default renderText;

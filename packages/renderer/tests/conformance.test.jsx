@@ -34,6 +34,25 @@ describe('conformance', () => {
     expect(document).toContain('<pdfaid:conformance>B</pdfaid:conformance>');
   });
 
+  test('should render PDF/UA-1 document as PDF 1.7 with conformance metadata', async () => {
+    const document = await ReactPDF.renderToString(
+      <TestDocument conformance="PDF/UA-1" />,
+    );
+
+    expect(document.indexOf('%PDF-1.7')).toBe(0);
+    expect(document).toContain('<pdfuaid:part>1</pdfuaid:part>');
+    expect(document).not.toContain('pdfaid:');
+  });
+
+  test('should not tag a PDF/UA-1 document by itself', async () => {
+    const document = await ReactPDF.renderToString(
+      <TestDocument conformance="PDF/UA-1" />,
+    );
+
+    expect(document).not.toContain('/MarkInfo');
+    expect(document).not.toContain('/StructTreeRoot');
+  });
+
   test('should respect explicit pdfVersion over conformance default', async () => {
     const document = await ReactPDF.renderToString(
       <Document conformance="PDF/A-3b" pdfVersion="1.6">

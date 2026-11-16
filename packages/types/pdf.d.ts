@@ -6,4 +6,22 @@ export type PDFConformance =
   | 'PDF/A-2'
   | 'PDF/A-2b'
   | 'PDF/A-3'
-  | 'PDF/A-3b';
+  | 'PDF/A-3b'
+  | 'PDF/UA-1';
+
+export type TextTag =
+  | 'P'
+  | 'H1'
+  | 'H2'
+  | 'H3'
+  | 'H4'
+  | 'H5'
+  | 'H6'
+  | 'Lbl'
+  | 'LBody'
+  | 'TOCI'
+  | 'Caption'
+  | 'BlockQuote'
+  | 'Reference'
+  | 'Span'
+  | 'Artifact';

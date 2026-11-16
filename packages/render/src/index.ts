@@ -2,11 +2,23 @@ import type { SafeDocumentNode } from '@react-pdf/layout';
 
 import renderNode from './primitives/renderNode';
 import addBookmarks from './operations/addBookmarks';
-import { Context } from './types';
+import { Context, RenderOptions } from './types';
 
-const render = (ctx: Context, doc: SafeDocumentNode) => {
+const render = (
+  ctx: Context,
+  doc: SafeDocumentNode,
+  tagged: boolean = false,
+) => {
   const pages = doc.children || [];
-  const options = { imageCache: new Map(), fieldSets: [] };
+  const options: RenderOptions = { imageCache: new Map(), fieldSets: [] };
+
+  // pdfkit ends the Document element, like every top-level structure
+  // element, in ctx.end().
+  if (tagged) {
+    const parent = ctx.struct('Document');
+    ctx.addStructure(parent);
+    options.taggingCtx = { parent };
+  }
 
   pages.forEach((page) => renderNode(ctx, page, options));
 
