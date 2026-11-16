@@ -69,6 +69,37 @@ describe('experimentalTagged', () => {
     expect(markedContent(pdf)).toEqual(['P#0', 'P#1']);
   });
 
+  test('should tag text by its tag prop', async () => {
+    const pdf = await render(
+      <Document experimentalTagged>
+        <Page>
+          <Text tag="H1">Title</Text>
+          <Text tag="BlockQuote">Quote</Text>
+          <Text>Paragraph</Text>
+        </Page>
+      </Document>,
+    );
+
+    expect(structTypes(pdf)).toEqual(
+      expect.arrayContaining(['Document', 'H1', 'BlockQuote', 'P']),
+    );
+    expect(markedContent(pdf)).toEqual(['H1#0', 'BlockQuote#1', 'P#2']);
+  });
+
+  test('should mark tag="Artifact" text as an artifact outside the structure tree', async () => {
+    const pdf = await render(
+      <Document experimentalTagged>
+        <Page>
+          <Text tag="Artifact">Running header</Text>
+          <Text>Paragraph</Text>
+        </Page>
+      </Document>,
+    );
+
+    expect(markedContent(pdf)).toEqual(['Artifact', 'P#0']);
+    expect(structTypes(pdf).filter((type) => type === 'P')).toHaveLength(1);
+  });
+
   test('should mark only drawn backgrounds and borders as artifacts', async () => {
     const pdf = await render(
       <Document experimentalTagged>

@@ -8,6 +8,7 @@ import {
   FontStore,
   PDFVersion,
   PDFConformance,
+  TextTag,
   Orientation,
   SourceObject,
   SrcSet,
@@ -300,6 +301,12 @@ declare namespace ReactPDF {
      * @see https://react-pdf.org/advanced#orphan-&-widow-protection
      */
     widows?: number;
+    /**
+     * Structure type of the text in Tagged PDF output. Defaults to 'P'.
+     * 'Artifact' leaves it out of the structure tree, e.g. for running headers.
+     * Only applies to a top-level Text: nested Text is part of its parent.
+     */
+    tag?: TextTag;
   }
 
   interface SVGTextProps extends SVGPresentationAttributes {

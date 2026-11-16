@@ -257,7 +257,9 @@ const renderText = (
   node: SafeTextNode,
   options: RenderOptions,
 ) => {
-  withTag(options.taggingCtx, ctx, 'P', () => drawText(ctx, node));
+  const tag = node.props?.tag || 'P';
+
+  withTag(options.taggingCtx, ctx, tag, () => drawText(ctx, node));
 };
 
 export default renderText;
