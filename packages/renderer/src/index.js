@@ -40,6 +40,7 @@ const pdf = (initialValue) => {
     const {
       pdfVersion,
       conformance,
+      experimentalTagged = false,
       language,
       pageLayout,
       pageMode,
@@ -65,6 +66,7 @@ const pdf = (initialValue) => {
     const ctx = new PDFDocument({
       compress,
       subset: conformance,
+      tagged: experimentalTagged,
       pdfVersion:
         pdfVersion || (conformance ? conformancePdfVersion : undefined),
       lang: language,
@@ -91,7 +93,7 @@ const pdf = (initialValue) => {
     }
 
     const layout = await layoutDocument(container.document, fontStore);
-    const fileStream = renderPDF(ctx, layout);
+    const fileStream = renderPDF(ctx, layout, experimentalTagged);
     return { layout, fileStream };
   };
 

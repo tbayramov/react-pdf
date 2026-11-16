@@ -57,6 +57,11 @@ declare namespace ReactPDF {
     modificationDate?: Date;
     pdfVersion?: PDFVersion;
     conformance?: PDFConformance;
+    /**
+     * Opt into Tagged PDF output. Work in progress: only Text is tagged so
+     * far, everything else is marked as an artifact.
+     */
+    experimentalTagged?: boolean;
     pageMode?: PageMode;
     pageLayout?: PageLayout;
     ownerPassword?: string;

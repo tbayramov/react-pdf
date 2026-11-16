@@ -62,6 +62,11 @@ export type DocumentProps = {
   ownerPassword?: string;
   userPassword?: string;
   permissions?: Permissions;
+  /**
+   * Opt into Tagged PDF output. Work in progress: only Text is tagged so
+   * far, everything else is marked as an artifact.
+   */
+  experimentalTagged?: boolean;
   onRender?: (props: OnRenderProps) => any;
 };
 
