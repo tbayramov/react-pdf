@@ -57,15 +57,20 @@ const pdf = (initialValue) => {
       permissions,
     } = props;
 
-    // PDF/A-1 requires PDF 1.4; PDF/A-2/3 require PDF 1.7. pdfkit defaults
-    // to 1.3, which skips writing the metadata that marks the file as PDF/A.
+    // PDF/A-1 requires PDF 1.4; PDF/A-2/3 and PDF/UA-1 require PDF 1.7.
+    // pdfkit defaults to 1.3, which skips writing the metadata that marks
+    // the file as conforming.
     const conformancePdfVersion = conformance?.startsWith('PDF/A-1')
       ? '1.4'
       : '1.7';
 
+    // pdfkit names PDF/UA-1 'PDF/UA'. It only writes the identification
+    // metadata; meeting PDF/UA-1 is up to the document.
+    const subset = conformance === 'PDF/UA-1' ? 'PDF/UA' : conformance;
+
     const ctx = new PDFDocument({
       compress,
-      subset: conformance,
+      subset,
       tagged: experimentalTagged,
       pdfVersion:
         pdfVersion || (conformance ? conformancePdfVersion : undefined),

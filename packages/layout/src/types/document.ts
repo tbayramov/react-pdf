@@ -12,7 +12,8 @@ export type PDFConformance =
   | 'PDF/A-2'
   | 'PDF/A-2b'
   | 'PDF/A-3'
-  | 'PDF/A-3b';
+  | 'PDF/A-3b'
+  | 'PDF/UA-1';
 
 export type PageLayout =
   | 'singlePage'
